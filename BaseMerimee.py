@@ -38,17 +38,22 @@ def parse_Merimee_csv(csv_file):
     try:
         for row in csvReader:
             merimee_id = row['REF']
-            ppro = row['PPRO']
-            mh_type = None
-            if 'classement' in ppro:
-                mh_type = "classe"
-            elif 'inscription' in ppro:
-                mh_type = "inscrit"
-            else:
-                mh_type = None
-            row['MH_TYPE'] = mh_type
-            dataset[merimee_id] = row
+            dataset[merimee_id] = handle_Merimee_csv_row(row)
     except csv.Error, e:
         sys.exit('file %s, line %d: %s' % (csv_file,
-                                            csvReader.line_num, e))
+                                           csvReader.line_num, e))
     return dataset
+
+
+def handle_Merimee_csv_row(csv_row):
+    """Return a Mérimée dictionary enriched."""
+    ppro = csv_row['PPRO']
+    mh_type = None
+    if 'classement' in ppro:
+        mh_type = "classe"
+    elif 'inscription' in ppro:
+        mh_type = "inscrit"
+    else:
+        mh_type = None
+    csv_row['MH_TYPE'] = mh_type
+    return csv_row
